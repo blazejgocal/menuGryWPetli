@@ -1,4 +1,5 @@
-﻿bool czyKoniecWalki = false;
+﻿//zmienne
+bool czyKoniecWalki = false;
 Random rnd = new Random();
 int zdrowieBohatera = rnd.Next(1, 101);
 int zdrowiePrzeciwnika = rnd.Next(1, 101);
@@ -9,20 +10,24 @@ int liczbaMiksturP = rnd.Next(1, 6);
 int premiaGraczaDoKrytycznego = rnd.Next(1, 3);
 int premiaPrzeciwnikaDoKrytycznego = rnd.Next(1, 3);
 int tura = 1;
+//początek tury
 while (!czyKoniecWalki)
 {
+    //zmienne resetujące się co turę
     bool czyUnikG = false;
     bool czyUnikP = false;
     bool czyAtakG = false;
     bool czyAtakP = false;
     int obrazeniaG = 0;
     int obrazeniaP = 0;
+    //informacje na początku tury
     Console.WriteLine("TURA: " + tura);
     tura++;
     Console.WriteLine("ZdrowieBohatera: " + zdrowieBohatera);
     Console.WriteLine("ZdrowiePrzeciwnika: " + zdrowiePrzeciwnika);
     Console.WriteLine("Wybierz czynność: atak/mikstura/unik");
     string czynnoscGracza = Console.ReadLine()!;
+    //wybieranie czynności gracza
     switch (czynnoscGracza)
     {
         case "atak":
@@ -39,7 +44,7 @@ while (!czyKoniecWalki)
             czyAtakG = true;
             break;
         case "mikstura":
-            if (liczbaMiksturG != 0)
+            if (liczbaMiksturG > 0)
             {
                 zdrowieBohatera += 20;
                 liczbaMiksturG--;
@@ -59,11 +64,11 @@ while (!czyKoniecWalki)
             }
             else
             {
-                Console.WriteLine("Nie wykonano uniku.");
+                Console.WriteLine("Unik nieudany.");
             }
             break;
     }
-
+    //losowanie czynności przeciwnika
     string czynnoscPrzeciwnika = " ";
     Console.Write("Czynność przeciwnika: ");
     int czynnoscPrzeciwnika1 = rnd.Next(1, 4);
@@ -82,7 +87,7 @@ while (!czyKoniecWalki)
         Console.WriteLine("unik.");
         czynnoscPrzeciwnika = "unik";
     }
-
+    //podejmowanie czynności przeciwnika
     switch (czynnoscPrzeciwnika)
     {
         case "atak":
@@ -121,5 +126,54 @@ while (!czyKoniecWalki)
             }
             break;
     }
+    //porównywanie czynności
+    switch (czyAtakG, czyAtakP)
+    {
+        case (true, true):
+            if (obrazeniaG > obrazeniaP)
+            {
+                zdrowiePrzeciwnika -= obrazeniaG - obrazeniaP;
+            }
+            else if (obrazeniaG < obrazeniaP)
+            {
+                zdrowieBohatera -= obrazeniaP - obrazeniaG;
+            }
+            break;
+        case (true, false):
+            if (czyUnikP == true)
+            {
+                Console.WriteLine("Przeciwnik uniknął ataku.");
+            }
+            else
+            {
+                zdrowiePrzeciwnika -= obrazeniaG;
+            }
+            break;
+        case (false, true):
+            if (czyUnikG == true)
+            {
+                Console.WriteLine("Bohater uniknął ataku.");
+            }
+            else
+            {
+                zdrowieBohatera -= obrazeniaP;
+            }
+            break;
+    }
+    //sprawdzanie żywotności
+    if (zdrowieBohatera <= 0)
+    {
+        Console.WriteLine("KONIEC WALKI. BOHATER ZGINĄŁ");
+        czyKoniecWalki =  true;
+    }
+    else if (zdrowiePrzeciwnika <= 0)
+    {
+        Console.WriteLine("KONIEC WALKI. BOHATER ZWYCIĘŻYŁ");
+        czyKoniecWalki = true;
+    }
 }
-//dodać porównanie czynności
+//dodać wypisywanie reszty statystyk
+//zmienić możliwe obrażenia
+//dodać czyszczenie konsoli co turę
+//dodać spowolnienie wypisywania informacji
+//dodać kolory
